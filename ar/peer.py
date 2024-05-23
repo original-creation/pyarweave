@@ -405,8 +405,9 @@ class Peer(HTTPClient):
 
     def tx(self, txid):
         '''Return a JSON-encoded transaction.'''
-        response = self._get_json('tx', txid)
-        tx = response
+        tx = self._get_json('tx', txid)
+        if tx.get("format", 1) == 1:
+            return tx
         for tag in tx['tags']:
             for key in tag:
                 tag[key] = b64dec(tag[key].encode())
@@ -424,8 +425,9 @@ class Peer(HTTPClient):
 
     def unconfirmed_tx(self, txid):
         '''Return a possibly unconfirmed JSON-encoded transaction.'''
-        response = self._get_json('unconfirmed_tx', txid)
-        tx = response
+        tx = self._get_json('unconfirmed_tx', txid)
+        if tx.get("format", 1) == 1:
+            return tx
         for tag in tx['tags']:
             for key in tag:
                 tag[key] = b64dec(tag[key].encode())
